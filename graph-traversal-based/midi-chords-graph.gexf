@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+	<meta lastmodifieddate="2025-01-14">
+		<creator>NetworkX 3.4.2</creator>
+	</meta>
+	<graph defaultedgetype="directed" mode="static" name="">
+		<nodes>
+			<node id="Cmaj" label="Cmaj" />
+			<node id="F#m" label="F#m" />
+			<node id="Gmaj" label="Gmaj" />
+			<node id="Dmaj" label="Dmaj" />
+			<node id="Em" label="Em" />
+			<node id="Amaj" label="Amaj" />
+			<node id="Cm" label="Cm" />
+			<node id="Fmaj" label="Fmaj" />
+			<node id="Gm" label="Gm" />
+			<node id="Dm" label="Dm" />
+			<node id="Emaj" label="Emaj" />
+			<node id="Amaj7" label="Amaj7" />
+		</nodes>
+		<edges>
+			<edge source="Cmaj" target="F#m" id="0" />
+			<edge source="Cmaj" target="Gmaj" id="1" />
+			<edge source="Cmaj" target="Dmaj" id="2" />
+			<edge source="Cmaj" target="Em" id="3" />
+			<edge source="F#m" target="Gmaj" id="4" />
+			<edge source="F#m" target="Cmaj" id="5" />
+			<edge source="F#m" target="Amaj" id="6" />
+			<edge source="F#m" target="Dmaj" id="7" />
+			<edge source="Gmaj" target="Cmaj" id="8" />
+			<edge source="Gmaj" target="F#m" id="9" />
+			<edge source="Gmaj" target="Amaj" id="10" />
+			<edge source="Gmaj" target="Em" id="11" />
+			<edge source="Dmaj" target="Cmaj" id="12" />
+			<edge source="Dmaj" target="F#m" id="13" />
+			<edge source="Dmaj" target="Gmaj" id="14" />
+			<edge source="Dmaj" target="Em" id="15" />
+			<edge source="Em" target="Cmaj" id="16" />
+			<edge source="Em" target="F#m" id="17" />
+			<edge source="Em" target="Gmaj" id="18" />
+			<edge source="Em" target="Dmaj" id="19" />
+			<edge source="Amaj" target="Cmaj" id="20" />
+			<edge source="Amaj" target="F#m" id="21" />
+			<edge source="Amaj" target="Gmaj" id="22" />
+			<edge source="Amaj" target="Em" id="23" />
+			<edge source="Cm" target="Fmaj" id="24" />
+			<edge source="Cm" target="Gm" id="25" />
+			<edge source="Cm" target="Dm" id="26" />
+			<edge source="Cm" target="Emaj" id="27" />
+			<edge source="Fmaj" target="Gm" id="28" />
+			<edge source="Fmaj" target="Cm" id="29" />
+			<edge source="Fmaj" target="Amaj7" id="30" />
+			<edge source="Fmaj" target="Dm" id="31" />
+			<edge source="Gm" target="Cm" id="32" />
+			<edge source="Gm" target="Fmaj" id="33" />
+			<edge source="Gm" target="Amaj7" id="34" />
+			<edge source="Gm" target="Emaj" id="35" />
+			<edge source="Dm" target="Cm" id="36" />
+			<edge source="Dm" target="Fmaj" id="37" />
+			<edge source="Dm" target="Gm" id="38" />
+			<edge source="Dm" target="Emaj" id="39" />
+			<edge source="Emaj" target="Cm" id="40" />
+			<edge source="Emaj" target="Fmaj" id="41" />
+			<edge source="Emaj" target="Gm" id="42" />
+			<edge source="Emaj" target="Dm" id="43" />
+			<edge source="Amaj7" target="Cm" id="44" />
+			<edge source="Amaj7" target="Fmaj" id="45" />
+			<edge source="Amaj7" target="Gm" id="46" />
+			<edge source="Amaj7" target="Emaj" id="47" />
+		</edges>
+	</graph>
+</gexf>

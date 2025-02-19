@@ -1,15 +1,13 @@
 from midiutil import MIDIFile
 import random
-from typing import List, Tuple, Dict
 
 TRACK = 0
 CHANNEL = 0
 TEMPO = 120
 VOLUME = 90
-
 NOTE_DURATION = 2
 
-def OutputMIDI(chords: 'Chords', filename: str) -> None:
+def OutputMIDI(chords, filename) -> None:
     try:
         MIDIMelody = MIDIFile(1)
         MIDIMelody.addTempo(TRACK, 0, TEMPO)
@@ -21,11 +19,11 @@ def OutputMIDI(chords: 'Chords', filename: str) -> None:
         print("An error occurred while generating the MIDI file")
 
 class Chords():
-    def __init__(self, graph: Dict[Tuple[int, int, int], List[Tuple[int, int, int]]]) -> None:
-        self.chords: List[Tuple[int, int, int]] = []
+    def __init__(self, graph) -> None:
+        self.chords = []
         self.graph = graph
 
-    def generateChords(self, totalChords: int) -> None:
+    def generateChords(self, totalChords) -> None:
         time = 0
 
         currentChord = random.choice(list(self.graph.keys()))

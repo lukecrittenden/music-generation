@@ -1,6 +1,5 @@
 from midiutil import MIDIFile
 import random
-from typing import List, Tuple
 
 C_MAJ = [60, 62, 64, 65, 67, 69, 71, 72]
 C_MIN = [60, 62, 63, 65, 67, 68, 71, 72]
@@ -12,7 +11,7 @@ VOLUME = 90
 
 LEAP_CHANCE = 0.35
 
-def OutputMIDI(melody: 'Melody', chords: 'Chords', mode: List[int], transposeAmount: int, filename: str) -> None:
+def OutputMIDI(melody, chords, mode, transposeAmount, filename) -> None:
     try:
         MIDIMelody = MIDIFile(1)
         MIDIMelody.addTempo(TRACK, 0, TEMPO)
@@ -26,9 +25,9 @@ def OutputMIDI(melody: 'Melody', chords: 'Chords', mode: List[int], transposeAmo
         print("An error occurred while generating the MIDI file")
 
 class Melody:
-    def __init__(self, length: int) -> None:
+    def __init__(self, length) -> None:
         self.length = length + (4 - length % 4) if length % 4 != 0 else length
-        self.melody: List[Tuple[int, int, int]] = []
+        self.melody = []
 
     def chooseNoteLength(self) -> int:
         return random.choice([1, 2, 4])
@@ -67,9 +66,9 @@ class Melody:
                 self.length -= duration
 
 class Chords:
-    def __init__(self, melody: List[Tuple[int, int, int]]) -> None:
+    def __init__(self, melody) -> None:
         self.melody = melody
-        self.chords: List[Tuple[int, int, int]] = []
+        self.chords = []
 
     def generateChords(self) -> None:
         chordMap = {

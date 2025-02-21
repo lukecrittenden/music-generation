@@ -11,7 +11,7 @@ VOLUME = 90
 
 LEAP_CHANCE = 0.35
 
-def OutputMIDI(melody, chords, mode, transposeAmount, filename) -> None:
+def OutputMIDI(melody, chords, mode, transposeAmount, filename):
     try:
         MIDIMelody = MIDIFile(1)
         MIDIMelody.addTempo(TRACK, 0, TEMPO)
@@ -25,17 +25,17 @@ def OutputMIDI(melody, chords, mode, transposeAmount, filename) -> None:
         print("An error occurred while generating the MIDI file")
 
 class Melody:
-    def __init__(self, length) -> None:
+    def __init__(self, length):
         self.length = length + (4 - length % 4) if length % 4 != 0 else length
         self.melody = []
 
-    def chooseNoteLength(self) -> int:
+    def chooseNoteLength(self):
         return random.choice([1, 2, 4])
         
-    def chooseNotePitch(self) -> int:
+    def chooseNotePitch(self):
         return random.choice([0, 1, 2, 4, 5, 6, 7])
 
-    def generateMelody(self) -> None:
+    def generateMelody(self):
         time = 0
         previousPitch = -1
         previousPitchCount = 0
@@ -66,11 +66,11 @@ class Melody:
                 self.length -= duration
 
 class Chords:
-    def __init__(self, melody) -> None:
+    def __init__(self, melody):
         self.melody = melody
         self.chords = []
 
-    def generateChords(self) -> None:
+    def generateChords(self):
         chordMap = {
             0: [0, 2, 4, 7],
             2: [0, 2, 4, 7],

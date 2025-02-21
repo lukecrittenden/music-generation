@@ -7,7 +7,7 @@ TEMPO = 120
 VOLUME = 90
 NOTE_DURATION = 2
 
-def OutputMIDI(chords, filename) -> None:
+def OutputMIDI(chords, filename):
     try:
         MIDIMelody = MIDIFile(1)
         MIDIMelody.addTempo(TRACK, 0, TEMPO)
@@ -19,11 +19,11 @@ def OutputMIDI(chords, filename) -> None:
         print("An error occurred while generating the MIDI file")
 
 class Chords():
-    def __init__(self, graph) -> None:
+    def __init__(self, graph):
         self.chords = []
         self.graph = graph
 
-    def generateChords(self, totalChords) -> None:
+    def generateChords(self, totalChords):
         time = 0
 
         currentChord = random.choice(list(self.graph.keys()))

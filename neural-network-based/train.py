@@ -4,7 +4,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense, Input
+from tensorflow.keras.layers import LSTM, Dense, Input, Dropout
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.callbacks import EarlyStopping
 from utils import loadMidiFiles, midiFilesToNotes
 
 class LSTMModel:
@@ -33,9 +35,12 @@ class LSTMModel:
     def buildModel(self):
         self.model = Sequential([
             Input(shape=(self.seqLength, 2)),
-            LSTM(128, return_sequences=True),
-            LSTM(128),
-            Dense(64, activation='relu'),
+            LSTM(128, return_sequences=True, kernel_regularizer=l2(0.001)),
+            Dropout(0.3),
+            LSTM(128, kernel_regularizer=l2(0.001)),
+            Dropout(0.3),
+            Dense(64, activation='relu', kernel_regularizer=l2(0.001)),
+            Dropout(0.3),
             Dense(2)
         ])
         self.model.summary()
@@ -43,7 +48,8 @@ class LSTMModel:
         self.model.compile(loss='mean_squared_error', optimizer='adam')
 
     def trainModel(self):
-        self.model.fit(self.X, self.y, epochs=20, batch_size=64)
+        early_stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+        self.model.fit(self.X, self.y, epochs=50, batch_size=64, validation_split=0.2, callbacks=[early_stop])
 
     def saveModel(self):
         self.model.save('lstm_model.keras')

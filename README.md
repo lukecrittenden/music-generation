@@ -8,3 +8,5 @@ This example makes use of the graph traversal method for generating chord progre
 
 ### Neural-network-based system
 This example makes use of an LSTM neural network for extending MIDI files. The neural network may be trained from a dataset of MIDI files, and this network can then extend selected MIDI files.
+
+Note: Any feedback would be greatly appreciated!

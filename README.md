@@ -7,6 +7,6 @@ This example showcases an algorithmic rule-based system for generating piano mel
 This example makes use of the graph traversal method for generating chord progressions. A GEXF file also shows the graph used for the program, although any graph linking chords (with MIDI values) may be used.
 
 ### Neural-network-based system
-This example makes use of an LSTM neural network for extending MIDI files. The neural network may be trained from a dataset of MIDI files, and this network can then extend selected MIDI files.
+This example makes use of an LSTM neural network for extending MIDI files. The neural network is trained from a dataset of MIDI files, and this network can be used generate new music.
 
 Note: Any feedback would be greatly appreciated!

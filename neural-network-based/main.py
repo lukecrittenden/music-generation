@@ -1,96 +1,23 @@
-import collections
-import datetime
-import glob
 import numpy as np
-import pathlib
-import pandas as pd
-import pretty_midi
-import seaborn as sns
 import tensorflow as tf
-import os
+import pretty_midi
 
-from matplotlib import pyplot as plt
-from typing import Optional
-
-class MidiGeneratorModel:
-    def __init__(self, dataPath='data/maestro-v2.0.0', sequenceLength=25, samplingRate=16000):
-        # self.seed = 42
+class MidiMusicGenerator:
+    def __init__(self, modelPath='trained_model.keras', dataPath='training_data.npz', sequenceLength=25):
         self.sequenceLength = sequenceLength
         self.numPitches = 128
-        self.samplingRate = samplingRate
-        self.dataPath = pathlib.Path(dataPath)
+            
+        self.model = tf.keras.models.load_model(modelPath)
+        data = np.load(dataPath)
+        self.X = data['X']
+        self.y = data['y']
 
-        # tf.random.set_seed(self.seed)
-        # np.random.seed(self.seed)
-
-        self.model = None
-        self.notesDf = None
-        self.X = None
-        self.y = None
-
-        self._ensureDataDownloaded()
-        self._loadData()
-        self._prepareSequences()
-        self._buildModel()
-
-    def _ensureDataDownloaded(self):
-        if not self.dataPath.exists():
-            tf.keras.utils.get_file(
-                'maestro-v2.0.0-midi.zip',
-                origin='https://storage.googleapis.com/magentadata/datasets/maestro/v2.0.0/maestro-v2.0.0-midi.zip',
-                extract=True,
-                cache_dir='.',
-                cache_subdir='data',
-            )
-
-    def _midiToNotes(self, midiFile):
-        pm = pretty_midi.PrettyMIDI(midiFile)
-        notes = []
-        for instrument in pm.instruments:
-            if not instrument.is_drum:
-                for note in instrument.notes:
-                    notes.append((note.start, note.end, note.pitch, note.velocity))
-        notes.sort(key=lambda x: x[0])
-        return notes
-
-    def _loadData(self, fileLimit=5):
-        fileNames = glob.glob(str(self.dataPath / '**/*.mid*'), recursive=True)
-        print(f'Total MIDI files: {len(fileNames)}')
-        allNotes = []
-
-        if fileLimit != None:
-            fileNames = fileNames[:fileLimit]
-
-        for file in fileNames:
-            notes = self._midiToNotes(file)
-            allNotes.extend(notes)
-
-        self.notesDf = pd.DataFrame(allNotes, columns=['start', 'end', 'pitch', 'velocity'])
-
-    def _prepareSequences(self):
-        pitchSequences = []
-        step = 1
-        for i in range(0, len(self.notesDf) - self.sequenceLength, step):
-            seq = self.notesDf['pitch'].values[i:i + self.sequenceLength]
-            pitchSequences.append(seq)
-
-        pitchSequences = np.array(pitchSequences)
-        self.X = pitchSequences[:, :-1] / self.numPitches
-        self.y = tf.keras.utils.to_categorical(pitchSequences[:, -1], num_classes=self.numPitches)
-
-    def _buildModel(self):
-        self.model = tf.keras.Sequential([
-            tf.keras.layers.Input(shape=(self.sequenceLength - 1,)),
-            tf.keras.layers.Embedding(input_dim=self.numPitches, output_dim=64),
-            tf.keras.layers.LSTM(128),
-            tf.keras.layers.Dense(self.numPitches, activation='softmax')
-        ])
-
-        self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-        self.model.summary()
-
-    def train(self, epochs=20, batchSize=64):
-        self.model.fit(self.X, self.y, epochs=epochs, batch_size=batchSize)
+    def sampleWithTemperature(self, preds, temperature=1.0):
+        preds = np.asarray(preds).astype('float64')
+        preds = np.log(preds + 1e-8) / temperature
+        expPreds = np.exp(preds)
+        preds = expPreds / np.sum(expPreds)
+        return np.random.choice(range(len(preds)), p=preds)
 
     def generateMusic(self, seedSequence, length=100):
         generated = list(seedSequence)
@@ -99,7 +26,7 @@ class MidiGeneratorModel:
             inputSeq = inputSeq / self.numPitches
             inputSeq = np.expand_dims(inputSeq, axis=0)
             prediction = self.model.predict(inputSeq, verbose=0)
-            nextNote = np.argmax(prediction)
+            nextNote = self.sampleWithTemperature(prediction[0], temperature=0.8)
             generated.append(nextNote)
         return generated
 
@@ -116,10 +43,9 @@ class MidiGeneratorModel:
         midi.write(outputFile)
         print(f"Generated music saved to '{outputFile}'")
 
-if __name__ == '__main__':
-    midiGen = MidiGeneratorModel()
-    midiGen.train()
 
-    seedSeq = midiGen.X[0] * midiGen.numPitches
-    generatedSeq = midiGen.generateMusic(seedSeq)
-    midiGen.saveMidi(generatedSeq)
+if __name__ == '__main__':
+    generator = MidiMusicGenerator()
+    seedSeq = generator.X[0] * generator.numPitches
+    generatedSeq = generator.generateMusic(seedSeq)
+    generator.saveMidi(generatedSeq)

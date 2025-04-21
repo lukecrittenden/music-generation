@@ -1,9 +1,10 @@
+import os
 import numpy as np
 import tensorflow as tf
 import pretty_midi
 
 class MidiMusicGenerator:
-    def __init__(self, modelPath='trained_model.keras', dataPath='training_data.npz', sequenceLength=25):
+    def __init__(self, modelPath='neural-network-based/trained_model.keras', dataPath='neural-network-based/training_data.npz', sequenceLength=25):
         self.sequenceLength = sequenceLength
         self.numPitches = 128
             
@@ -11,6 +12,15 @@ class MidiMusicGenerator:
         data = np.load(dataPath)
         self.X = data['X']
         self.y = data['y']
+
+    def loadMidiSeed(self, midiFilePath):
+        midi = pretty_midi.PrettyMIDI(os.path.join(os.getcwd(), 'neural-network-based', midiFilePath))
+        notes = []
+        for instrument in midi.instruments:
+            for note in instrument.notes:
+                notes.append(note.pitch)
+    
+        return np.array(notes)
 
     def sampleWithTemperature(self, preds, temperature=1.0):
         preds = np.asarray(preds).astype('float64')
@@ -46,6 +56,7 @@ class MidiMusicGenerator:
 
 if __name__ == '__main__':
     generator = MidiMusicGenerator()
-    seedSeq = generator.X[0] * generator.numPitches
-    generatedSeq = generator.generateMusic(seedSeq)
-    generator.saveMidi(generatedSeq)
+    seedSeq = generator.loadMidiSeed(input("Enter the name of the midi file you would like to extend (e.g. file.mid): "))
+    generatedSeq = generator.generateMusic(seedSeq, length=int(input("Enter the number of notes you would like to generate (e.g. 200): ")))
+    full_sequence = list(seedSeq) + generatedSeq
+    generator.saveMidi(full_sequence, outputFile='continued_music.mid')

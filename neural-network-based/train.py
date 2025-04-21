@@ -1,11 +1,12 @@
+import os
+import datetime
 import pathlib
 import tensorflow as tf
+from tensorflow.keras.callbacks import TensorBoard, EarlyStopping
 import numpy as np
 import pandas as pd
 import pretty_midi
 import glob
-
-from typing import Optional
 
 class MidiGeneratorModel:
     def __init__(self, dataPath='data/maestro-v2.0.0', sequenceLength=25, samplingRate=16000):
@@ -20,7 +21,7 @@ class MidiGeneratorModel:
         self.y = None
 
         self._ensureDataDownloaded()
-        self._loadData(fileLimit=1)
+        self._loadData(fileLimit=None)
         self._prepareSequences()
         self._buildModel()
 
@@ -80,8 +81,27 @@ class MidiGeneratorModel:
         self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
         self.model.summary()
 
-    def train(self, epochs=20, batchSize=64):
-        self.model.fit(self.X, self.y, epochs=epochs, batch_size=batchSize)
+    def train(self, epochs=20, batchSize=64, validationSplit=0.2, patience=3, logDir='logs'):
+        timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        fullLogDir = os.path.join(logDir, timestamp)
+        os.makedirs(fullLogDir, exist_ok=True)
+
+        tensorboardCb = TensorBoard(log_dir=fullLogDir)
+
+        earlyStoppingCb = EarlyStopping(
+            monitor='val_loss',
+            patience=patience,
+            restore_best_weights=True
+        )
+
+        self.model.fit(
+            self.X, self.y,
+            epochs=epochs,
+            batch_size=batchSize,
+            validation_split=validationSplit,
+            callbacks=[tensorboardCb, earlyStoppingCb]
+        )
+
 
     def save(self, modelPath='trained_model.keras', dataPath='training_data.npz'):
         self.model.save(modelPath)
